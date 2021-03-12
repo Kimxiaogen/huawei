@@ -108,4 +108,13 @@ public class Server {
         this.cost_of_devices = cost_of_devices;
         this.cost_of_energy = cost_of_energy;
     }
+
+    public int getCores() {
+        return this.node_A.getCores() + this.node_B.getCores();
+    }
+
+    public int getMemorize() {
+        return this.node_A.getMemorize() + this.node_B.getMemorize();
+    }
+
 }

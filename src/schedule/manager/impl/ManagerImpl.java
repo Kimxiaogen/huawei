@@ -36,6 +36,13 @@ public class ManagerImpl implements Manager {
      */
     private Request[][] requests;
 
+    /**
+     * 服务器CPU性价比
+     */
+    //private Map<String, Integer> cpu_cost_map;
+
+    //private Map<String, Integer>
+
     public List<Server> getAvailableServers() {
         return availableServers;
     }

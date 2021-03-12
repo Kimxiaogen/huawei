@@ -45,6 +45,22 @@ public class Node {
         this.memorize = memorize;
     }
 
+    public int getCores_used() {
+        return cores_used;
+    }
+
+    public void setCores_used(int cores_used) {
+        this.cores_used = cores_used;
+    }
+
+    public int getMemorize_used() {
+        return memorize_used;
+    }
+
+    public void setMemorize_used(int memorize_used) {
+        this.memorize_used = memorize_used;
+    }
+
     /**
      * 服务器节点构造函数
      * @param cores 服务器节点当前拥有的CPU核数
@@ -53,5 +69,7 @@ public class Node {
     public Node(int cores, int memorize) {
         this.cores = cores;
         this.memorize = memorize;
+        this.cores_used = 0;
+        this.memorize_used = 0;
     }
 }
