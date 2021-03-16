@@ -38,6 +38,16 @@ public class Virtual {
      */
     private boolean isDoubleNodes;
 
+    /**
+     * 虚拟机当前所在服务器编号
+     */
+    private int no;
+
+    /**
+     * 虚拟机部署于服务器哪个节点（单节点属性）（允许参数 “A” or “B”）
+     */
+    private char node;
+
     public int getId() {
         return id;
     }
@@ -76,6 +86,22 @@ public class Virtual {
 
     public void setDoubleNodes(boolean doubleNodes) {
         isDoubleNodes = doubleNodes;
+    }
+
+    public int getNo() {
+        return no;
+    }
+
+    public void setNo(int no) {
+        this.no = no;
+    }
+
+    public char getNode() {
+        return node;
+    }
+
+    public void setNode(char node) {
+        this.node = node;
     }
 
     /**

@@ -30,9 +30,9 @@ public class DataTool {
     public static Manager constructDataModel(String path) {
         File file = new File(path);
         Manager model = null;
-        List<Server> availableServers = new ArrayList<>();
+        Server[] availableServers;
         List<Server> currentServers = new ArrayList<>();
-        Map<String, Virtual> availableVirtuals = new HashMap<>();
+        Virtual[] availableVirtuals;
         Request[][] requests = null;
         FileReader fr = null;
         BufferedReader br = null;
@@ -51,24 +51,26 @@ public class DataTool {
         }
         //利用数据构造模型
         int i = 0, j = Integer.valueOf(text.get(i++)), k;
-        for (; j > 0; i++, j--) {    //构造服务器
+        availableServers = new Server[j];
+        for (int len = availableServers.length; j > 0; i++, j--) {    //构造服务器
             String curr = text.get(i);
             String[] str;
             Server server;
             curr = curr.substring(1, curr.length() - 1);
             str = curr.split(", ");
             server = new Server(str[0], Integer.valueOf(str[1]), Integer.valueOf(str[2]), Integer.valueOf(str[3]), Integer.valueOf(str[4]));
-            availableServers.add(server);
+            availableServers[len - j] = server;
         }
         j = Integer.valueOf(text.get(i++));
-        for (; j > 0; i++, j--) {    //构造虚拟机
+        availableVirtuals = new Virtual[j];
+        for (int len = availableVirtuals.length; j > 0; i++, j--) {    //构造虚拟机
             String curr = text.get(i);
             String[] str;
             Virtual virtual;
             curr = curr.substring(1, curr.length() - 1);
             str = curr.split(", ");
             virtual = new Virtual(str[0], Integer.valueOf(str[1]), Integer.valueOf(str[2]), Integer.valueOf(str[3]));
-            availableVirtuals.put(virtual.getType(), virtual);
+            availableVirtuals[len - j] = virtual;
         }
         j = Integer.valueOf(text.get(i++));
         requests = new Request[j][];

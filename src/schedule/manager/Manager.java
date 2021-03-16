@@ -27,12 +27,21 @@ public interface Manager {
     void VirtualMachineMigration();
 
     /**
+     * 模拟部署，返回需要扩容的服务器
+     * @param cost 花费二维数组，一维数组表示服务器（包含已有服务器），二维数组表示待添加虚拟机（可能会有相同类型虚拟机）
+     * @param servers 一维数组中服务器
+     * @param virtuals 二维数组中虚拟机
+     * @return 需要扩容的服务器
+     */
+    List<Server> tryDeploy(float[][] cost, Server[] servers, Virtual[] virtuals);
+
+    /**
      * 部署虚拟机
      */
     void Deploy();
 
     /**
-     * 输出解决方案
+     * 生成解决方案，并输出到控制台
      */
     void OutputSolution();
 
@@ -40,7 +49,7 @@ public interface Manager {
      * 获取可购买服务器集合
      * @return
      */
-    List<Server> getAvailableServers();
+    Server[] getAvailableServers();
 
     /**
      * 获取当前拥有服务器集合
@@ -52,7 +61,7 @@ public interface Manager {
      * 获取虚拟机集合
      * @return
      */
-    Map<String, Virtual> getAvailableVirtual();
+    Virtual[] getAvailableVirtual();
 
     /**
      * 获取全部请求序列集合

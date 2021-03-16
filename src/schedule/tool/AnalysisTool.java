@@ -34,12 +34,12 @@ public class AnalysisTool {
      * @param availableServers 可获得的服务器
      * @param days             总天数
      */
-    public static void printValueForMoney(List<Server> availableServers, int days) {
-        System.out.println("服务器类型\tCPU\t\t内存");
+    public static void printValueForMoney(Server[] availableServers, int days) {
+        System.out.println("服务器类型\tCPU\t\t内存\t\t总CPU\t\t总内存");
         for (Server server : availableServers) {
             float cost = (float) server.getCost_of_devices() / days + server.getCost_of_energy();
             float cpu_cost = cost / server.getCores(), memorize_cost = cost / server.getMemorize();
-            System.out.println(server.getType() + "\t" + String.format("%.2f", cpu_cost) + "\t" + String.format("%.2f", memorize_cost));
+            System.out.println(server.getType() + "\t" + String.format("%.2f", cpu_cost) + "\t" + String.format("%.2f", memorize_cost) + "\t" + server.getCores() + "\t" + server.getMemorize());
         }
     }
 
@@ -49,7 +49,7 @@ public class AnalysisTool {
      * @param availableVirtual 可获得的虚拟机
      * @param requests         请求序列
      */
-    public static void printMaxNeedofDaily(Map<String, Virtual> availableVirtual, Request[][] requests) {
+    /*public static void printMaxNeedofDaily(Virtual[] availableVirtual, Request[][] requests) {
         System.out.println("天数\tCPU\t内存");
         Map<Integer, String> inusedVirtual = new HashMap<>();
         for (int i = 0; i < requests.length; i++) {
@@ -76,16 +76,16 @@ public class AnalysisTool {
             }
             System.out.println(max_cpu + "\t" + max_mem);
         }
-    }
+    }*/
 
     public static void main(String[] args) {
         String path = "src/schedule/data/training-1.txt";    //读取训练数据-1
         //String path = "src/schedule/data/training-2.txt";    //读取训练数据-2
         Manager manager = DataTool.constructDataModel(path);    //调度类
-        List<Server> availableServers = manager.getAvailableServers();
-        Map<String, Virtual> availableVirtual = manager.getAvailableVirtual();
+        Server[] availableServers = manager.getAvailableServers();
+        Virtual[] availableVirtual = manager.getAvailableVirtual();
         Request[][] requests = manager.getRequests();
         printValueForMoney(availableServers, manager.getRequests().length);
-        printMaxNeedofDaily(availableVirtual, requests);
+        //printMaxNeedofDaily(availableVirtual, requests);
     }
 }
