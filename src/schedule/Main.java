@@ -11,16 +11,21 @@ import java.util.Map;
 
 /**
  * 主程序入口
+ *
  * @author Kim小根
  * @date 2021/3/11 10:51
  * <p>Description:主程序入口</p>
  */
 public class Main {
 
-    public static void main(String[] args){
-        String path = "src/schedule/data/training-1.txt";    //读取训练数据-1
-        //String path = "src/schedule/data/training-2.txt";    //读取训练数据-2
+    public static void main(String[] args) {
+        //String path = "src/schedule/data/training-1.txt";    //读取训练数据-1
+        String path = "src/schedule/data/training-2.txt";    //读取训练数据-2
+        long start = System.currentTimeMillis();
         Manager manager = DataTool.constructDataModel(path);    //调度类
+        manager.OutputSolution();
+        long end = System.currentTimeMillis();
+        System.out.println("总用时：" + (end - start) / 1000 + "s");
     }
 
 

@@ -1,5 +1,8 @@
 package schedule.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * 服务器模型
  *
@@ -8,6 +11,15 @@ package schedule.model;
  * <p>Description:实现服务器主要功能</p>
  */
 public class Server {
+
+    /**
+     * 表示A节点
+     */
+    private static final String NODE_A = "A";
+    /**
+     * 表示B节点
+     */
+    private static final String NODE_B = "B";
 
     /**
      * CPU最大核数
@@ -25,6 +37,16 @@ public class Server {
      * 最大服务器型号长度
      */
     private static final int MAX_LEN_OF_TYPE = 20;
+
+    /**
+     * 自动编号
+     */
+    private static Integer auto_no = 0;
+
+    /**
+     * 服务器编号
+     */
+    private int no;
 
     /**
      * 服务器型号
@@ -50,6 +72,19 @@ public class Server {
      * 服务器每日能耗成本
      */
     private int cost_of_energy;
+
+    /**
+     * 当前服务器上虚拟机集合
+     */
+    private Set<Virtual> virtualSet;
+
+    public int getNo() {
+        return no;
+    }
+
+    public void setNo(int no) {
+        this.no = no;
+    }
 
     public String getType() {
         return type;
@@ -91,8 +126,16 @@ public class Server {
         this.cost_of_energy = cost_of_energy;
     }
 
+    public Set<Virtual> getVirtualSet() {
+        return virtualSet;
+    }
+
+    public void setVirtualSet(Set<Virtual> virtualSet) {
+        this.virtualSet = virtualSet;
+    }
+
     /**
-     * 服务器构造函数
+     * 服务器（概念）构造函数
      *
      * @param type            服务器型号
      * @param cores           服务器拥有的CPU核数
@@ -107,6 +150,31 @@ public class Server {
         this.node_B = new Node(half_cores, half_memorize);
         this.cost_of_devices = cost_of_devices;
         this.cost_of_energy = cost_of_energy;
+        this.virtualSet = new HashSet<>();
+    }
+
+    public Server() {
+    }
+
+    /**
+     * 生产一个服务器
+     *
+     * @param auto 是否自动编号，若是，则为true；若不是，则为false
+     */
+    public Server productServer(boolean auto) {
+        if (auto) {
+            setNo(auto_no++);
+            return this;
+        } else {
+            Server s = new Server();
+            s.setType(type);
+            s.setNode_A(new Node(node_A));
+            s.setNode_B(new Node(node_B));
+            s.setCost_of_devices(cost_of_devices);
+            s.setCost_of_energy(cost_of_energy);
+            s.setVirtualSet(new HashSet<>(virtualSet));
+            return s;
+        }
     }
 
     public int getCores() {
@@ -117,4 +185,65 @@ public class Server {
         return this.node_A.getMemorize() + this.node_B.getMemorize();
     }
 
+    public int getCoresUsed() {
+        return this.node_A.getCores_used() + this.node_B.getCores_used();
+    }
+
+    public int getMemorizeUsed() {
+        return this.node_A.getMemorize_used() + this.node_B.getMemorize_used();
+    }
+
+    /**
+     * 添加虚拟机
+     *
+     * @param virtual 虚拟机
+     * @param node    当放入为单节点时，传入A or B；当放入为双节点时，传入null
+     */
+    public void add(Virtual virtual, String node) {
+        virtual.setServer(this);
+        this.virtualSet.add(virtual);
+        if (virtual.isDoubleNodes()) {
+            int cores = virtual.getCores() / 2, mem = virtual.getMemorize() / 2;
+            this.node_A.allocate(cores, mem, null);
+            this.node_B.allocate(cores, mem, null);
+        } else {
+            if (NODE_A.equals(node)) this.node_A.allocate(virtual.getCores(), virtual.getMemorize(), virtual.getId());
+            else this.node_B.allocate(virtual.getCores(), virtual.getMemorize(), virtual.getId());
+        }
+    }
+
+    /**
+     * 删除虚拟机
+     *
+     * @param virtual 虚拟机
+     */
+    public void remove(Virtual virtual) {
+        virtual.setServer(null);
+        this.virtualSet.remove(virtual);
+        if (virtual.isDoubleNodes()) {
+            int cores = -virtual.getCores() / 2, mem = -virtual.getMemorize() / 2;
+            this.node_A.allocate(cores, mem, null);
+            this.node_B.allocate(cores, mem, null);
+        } else {
+            Integer id = virtual.getId();
+            if (this.node_A.contain(id)) this.node_A.allocate(-virtual.getCores(), -virtual.getMemorize(), id);
+            else this.node_B.allocate(-virtual.getCores(), -virtual.getMemorize(), id);
+        }
+    }
+
+    /**
+     * 计算当前服务器的成本
+     *
+     * @return 成本值
+     */
+    public double cost() {
+        int used_cores = getCoresUsed(), used_mem = getMemorizeUsed();
+        //int total_cores = used_cores + getCores(), total_mem = used_mem + getMemorize();
+        //double cost = ((double)used_cores / total_cores + (double)used_mem / total_mem) / 2 * cost_of_devices;
+        double cost = (double) (cost_of_devices + 800 * cost_of_energy) / (used_cores + used_mem);   //1592730619
+        //double cost = (double)(cost_of_devices) / (used_cores + used_mem);    //1594260095
+        //double cost = 1/(((double)used_cores / total_cores + (double)used_mem / total_mem) / 2);    //1654709526
+        //double cost = (double)(cost_of_devices) / (total_cores + total_mem);  //NaN
+        return cost;
+    }
 }

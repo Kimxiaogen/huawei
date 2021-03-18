@@ -1,5 +1,7 @@
 package schedule.model;
 
+import java.util.Objects;
+
 /**
  * 虚拟机模型
  *
@@ -39,14 +41,19 @@ public class Virtual {
     private boolean isDoubleNodes;
 
     /**
-     * 虚拟机当前所在服务器编号
+     * 虚拟机当前所在服务器
      */
-    private int no;
+    private Server server;
 
     /**
      * 虚拟机部署于服务器哪个节点（单节点属性）（允许参数 “A” or “B”）
      */
     private char node;
+
+    /**
+     * 是否需要销毁该节点，当虚拟机已经部署后，该值为true，并销毁所有绑定该虚拟机的节点
+     */
+    private boolean destory;
 
     public int getId() {
         return id;
@@ -88,12 +95,12 @@ public class Virtual {
         isDoubleNodes = doubleNodes;
     }
 
-    public int getNo() {
-        return no;
+    public Server getServer() {
+        return server;
     }
 
-    public void setNo(int no) {
-        this.no = no;
+    public void setServer(Server server) {
+        this.server = server;
     }
 
     public char getNode() {
@@ -102,6 +109,14 @@ public class Virtual {
 
     public void setNode(char node) {
         this.node = node;
+    }
+
+    public boolean isDestory() {
+        return destory;
+    }
+
+    public void setDestory(boolean destory) {
+        this.destory = destory;
     }
 
     /**
@@ -117,5 +132,27 @@ public class Virtual {
         this.cores = cores;
         this.memorize = memorize;
         this.isDoubleNodes = isDoubleNodes == 1;
+        this.destory = false;
+    }
+
+    @Override
+    public Virtual clone() {
+        Virtual v = new Virtual(type, cores, memorize, isDoubleNodes ? 1 : 0);
+        return v;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) return true;
+        if(obj instanceof Virtual){
+            Virtual o = (Virtual)obj;
+            return o.getId() == this.id;
+        }
+        return false;
     }
 }

@@ -31,8 +31,7 @@ public class DataTool {
         File file = new File(path);
         Manager model = null;
         Server[] availableServers;
-        List<Server> currentServers = new ArrayList<>();
-        Virtual[] availableVirtuals;
+        Map<String, Virtual> availableVirtuals = new HashMap<>();
         Request[][] requests = null;
         FileReader fr = null;
         BufferedReader br = null;
@@ -62,15 +61,14 @@ public class DataTool {
             availableServers[len - j] = server;
         }
         j = Integer.valueOf(text.get(i++));
-        availableVirtuals = new Virtual[j];
-        for (int len = availableVirtuals.length; j > 0; i++, j--) {    //构造虚拟机
+        for (int len = 0; len < j; i++, len++) {    //构造虚拟机
             String curr = text.get(i);
             String[] str;
             Virtual virtual;
             curr = curr.substring(1, curr.length() - 1);
             str = curr.split(", ");
             virtual = new Virtual(str[0], Integer.valueOf(str[1]), Integer.valueOf(str[2]), Integer.valueOf(str[3]));
-            availableVirtuals[len - j] = virtual;
+            availableVirtuals.put(virtual.getType(), virtual);
         }
         j = Integer.valueOf(text.get(i++));
         requests = new Request[j][];
@@ -89,7 +87,7 @@ public class DataTool {
                 }
             }
         }
-        model = new ManagerImpl(availableServers, currentServers, availableVirtuals, requests);
+        model = new ManagerImpl(availableServers, availableVirtuals, requests);
         return model;
     }
 }

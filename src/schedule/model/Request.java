@@ -6,7 +6,7 @@ package schedule.model;
  * @date 2021/3/11 10:37
  * <p>Description: 实现虚拟机请求的主要功能</p>
  */
-public class Request {
+public class Request{
     /**
      * 添加虚拟机请求
      */

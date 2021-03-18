@@ -43,12 +43,6 @@ public class AnalysisTool {
         }
     }
 
-    /**
-     * 打印每日CPU、内存最高需求
-     *
-     * @param availableVirtual 可获得的虚拟机
-     * @param requests         请求序列
-     */
     /*public static void printMaxNeedofDaily(Virtual[] availableVirtual, Request[][] requests) {
         System.out.println("天数\tCPU\t内存");
         Map<Integer, String> inusedVirtual = new HashMap<>();
@@ -81,11 +75,11 @@ public class AnalysisTool {
     public static void main(String[] args) {
         String path = "src/schedule/data/training-1.txt";    //读取训练数据-1
         //String path = "src/schedule/data/training-2.txt";    //读取训练数据-2
-        Manager manager = DataTool.constructDataModel(path);    //调度类
-        Server[] availableServers = manager.getAvailableServers();
-        Virtual[] availableVirtual = manager.getAvailableVirtual();
-        Request[][] requests = manager.getRequests();
-        printValueForMoney(availableServers, manager.getRequests().length);
+//        Manager manager = DataTool.constructDataModel(path);    //调度类
+//        Server[] availableServers = manager.getAvailableServers();
+//        Virtual[] availableVirtual = manager.getAvailableVirtual();
+//        Request[][] requests = manager.getRequests();
+//        printValueForMoney(availableServers, manager.getRequests().length);
         //printMaxNeedofDaily(availableVirtual, requests);
     }
 }
