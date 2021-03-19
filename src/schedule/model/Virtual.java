@@ -9,7 +9,7 @@ import java.util.Objects;
  * @date 2021/3/11 10:19
  * <p>Description:实现虚拟机的主要功能</p>
  */
-public class Virtual {
+public class Virtual implements Comparable<Virtual> {
     /**
      * 最大虚拟机型号长度
      */
@@ -148,11 +148,17 @@ public class Virtual {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == this) return true;
-        if(obj instanceof Virtual){
-            Virtual o = (Virtual)obj;
+        if (obj == this) return true;
+        if (obj instanceof Virtual) {
+            Virtual o = (Virtual) obj;
             return o.getId() == this.id;
         }
         return false;
+    }
+
+    @Override
+    public int compareTo(Virtual o) {
+        if (o.getCores() != cores) return cores - o.getCores();
+        return memorize - o.getMemorize();
     }
 }

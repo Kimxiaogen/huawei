@@ -1,6 +1,7 @@
 package schedule.model;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -240,10 +241,25 @@ public class Server {
         int used_cores = getCoresUsed(), used_mem = getMemorizeUsed();
         //int total_cores = used_cores + getCores(), total_mem = used_mem + getMemorize();
         //double cost = ((double)used_cores / total_cores + (double)used_mem / total_mem) / 2 * cost_of_devices;
-        double cost = (double) (cost_of_devices + 800 * cost_of_energy) / (used_cores + used_mem);   //1592730619
-        //double cost = (double)(cost_of_devices) / (used_cores + used_mem);    //1594260095
+        //double cost = (double) (cost_of_devices + 800 * cost_of_energy) / (used_cores + used_mem);   //627401498
+        double cost = (double) (cost_of_devices) / (used_cores + used_mem);    //627113861
         //double cost = 1/(((double)used_cores / total_cores + (double)used_mem / total_mem) / 2);    //1654709526
         //double cost = (double)(cost_of_devices) / (total_cores + total_mem);  //NaN
         return cost;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(no);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj instanceof Server) {
+            Server o = (Server) obj;
+            return o.getNo() == this.no;
+        }
+        return false;
     }
 }

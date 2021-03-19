@@ -121,6 +121,10 @@ public class Node {
         this.memorize -= memorize;
         this.cores_used += cores;
         this.memorize_used += memorize;
+//        if(this.cores < 0) System.out.println(id);
+//        if(this.memorize < 0) System.out.println(id);
+//        if(cores_used < 0) System.out.println(id);
+//        if(memorize_used < 0) System.out.println(id);
         if (id != null) {
             if (cores < 0) this.virtualNoSet.remove(id);
             else this.virtualNoSet.add(id);
