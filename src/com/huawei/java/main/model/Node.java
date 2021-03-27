@@ -1,4 +1,4 @@
-package schedule.model;
+package com.huawei.java.main.model;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -10,16 +10,7 @@ import java.util.Set;
  * @date 2021/3/11 10:25
  * <p>Description:实现服务器节点的主要功能</p>
  */
-public class Node {
-
-    /**
-     * 表示A节点
-     */
-    private static final String NODE_A = "A";
-    /**
-     * 表示B节点
-     */
-    private static final String NODE_B = "B";
+public class Node implements Comparable<Node> {
 
     /**
      * 服务器节点当前拥有的CPU核数
@@ -46,14 +37,10 @@ public class Node {
      */
     private Set<Integer> virtualNoSet;
 
-    public Node(Node n) {
-        this.cores = n.getCores();
-        this.memorize = n.getMemorize();
-        this.cores_used = n.getCores_used();
-        this.memorize_used = n.getMemorize_used();
-        this.virtualNoSet = new HashSet<>(n.getVirtualNoSet());
-    }
-
+    /**
+     * 当前节点所在服务器
+     */
+    private Server server;
 
     public int getCores() {
         return cores;
@@ -95,6 +82,23 @@ public class Node {
         this.virtualNoSet = virtualNoSet;
     }
 
+    public Server getServer() {
+        return server;
+    }
+
+    public void setServer(Server server) {
+        this.server = server;
+    }
+
+
+    public Node(Node n) {
+        this.cores = n.getCores();
+        this.memorize = n.getMemorize();
+        this.cores_used = n.getCores_used();
+        this.memorize_used = n.getMemorize_used();
+        this.virtualNoSet = new HashSet<>(n.getVirtualNoSet());
+    }
+
     /**
      * 服务器节点构造函数
      *
@@ -121,10 +125,6 @@ public class Node {
         this.memorize -= memorize;
         this.cores_used += cores;
         this.memorize_used += memorize;
-//        if(this.cores < 0) System.out.println(id);
-//        if(this.memorize < 0) System.out.println(id);
-//        if(cores_used < 0) System.out.println(id);
-//        if(memorize_used < 0) System.out.println(id);
         if (id != null) {
             if (cores < 0) this.virtualNoSet.remove(id);
             else this.virtualNoSet.add(id);
@@ -141,4 +141,30 @@ public class Node {
         return this.virtualNoSet.contains(id);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        return false;
+    }
+
+    @Override
+    public int compareTo(Node o) {
+        double r = div() - o.div();
+        if (r > 0) return 1;
+        else if (r < 0) return -1;
+        else return 0;
+    }
+
+    public double div() {
+        if (memorize != 0) return (double) cores / memorize;
+        if (cores == 0) return (double) 0;
+        return Double.MAX_VALUE - 1 / cores;
+    }
+
+    @Override
+    public String toString() {
+        String cores_Str = cores < 10 ? "00" + cores : cores < 100 ? "0" + cores : String.valueOf(cores);
+        String memorize_Str = memorize < 10 ? "00" + memorize : memorize < 100 ? "0" + memorize : String.valueOf(memorize);
+        return cores_Str + memorize_Str;
+    }
 }

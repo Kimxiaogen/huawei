@@ -1,4 +1,4 @@
-package schedule.model;
+package com.huawei.java.main.model;
 
 /**
  * 虚拟机请求模型
@@ -7,15 +7,6 @@ package schedule.model;
  * <p>Description: 实现虚拟机请求的主要功能</p>
  */
 public class Request{
-    /**
-     * 添加虚拟机请求
-     */
-    private static final String ADD = "add";
-
-    /**
-     * 删除虚拟机请求
-     */
-    private static final String DEL = "del";
 
     /**
      * 请求类型

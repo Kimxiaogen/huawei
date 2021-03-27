@@ -1,4 +1,4 @@
-package schedule;
+package com.huawei.java.main;
 
 import java.io.BufferedReader;
 import java.io.File;

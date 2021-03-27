@@ -1,4 +1,4 @@
-package schedule.model;
+package com.huawei.java.main.model;
 
 import java.util.Objects;
 
@@ -10,10 +10,6 @@ import java.util.Objects;
  * <p>Description:实现虚拟机的主要功能</p>
  */
 public class Virtual implements Comparable<Virtual> {
-    /**
-     * 最大虚拟机型号长度
-     */
-    private static final int MAX_LEN_OF_TYPE = 20;
 
     /**
      * 虚拟机ID
@@ -48,7 +44,7 @@ public class Virtual implements Comparable<Virtual> {
     /**
      * 虚拟机部署于服务器哪个节点（单节点属性）（允许参数 “A” or “B”）
      */
-    private char node;
+    private String node;
 
     /**
      * 是否需要销毁该节点，当虚拟机已经部署后，该值为true，并销毁所有绑定该虚拟机的节点
@@ -103,11 +99,11 @@ public class Virtual implements Comparable<Virtual> {
         this.server = server;
     }
 
-    public char getNode() {
+    public String getNode() {
         return node;
     }
 
-    public void setNode(char node) {
+    public void setNode(String node) {
         this.node = node;
     }
 
@@ -138,6 +134,7 @@ public class Virtual implements Comparable<Virtual> {
     @Override
     public Virtual clone() {
         Virtual v = new Virtual(type, cores, memorize, isDoubleNodes ? 1 : 0);
+        v.setNode(node);
         return v;
     }
 

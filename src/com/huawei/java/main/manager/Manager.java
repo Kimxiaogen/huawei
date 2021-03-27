@@ -1,8 +1,8 @@
-package schedule.manager;
+package com.huawei.java.main.manager;
 
-import schedule.model.Request;
-import schedule.model.Server;
-import schedule.model.Virtual;
+import com.huawei.java.main.model.Request;
+import com.huawei.java.main.model.Server;
+import com.huawei.java.main.model.Virtual;
 
 import java.util.List;
 import java.util.Map;

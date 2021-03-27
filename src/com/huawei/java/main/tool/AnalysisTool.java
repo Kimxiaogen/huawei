@@ -1,13 +1,6 @@
-package schedule.tool;
+package com.huawei.java.main.tool;
 
-import schedule.manager.Manager;
-import schedule.model.Request;
-import schedule.model.Server;
-import schedule.model.Virtual;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.huawei.java.main.model.Server;
 
 /**
  * 数据集分析工具

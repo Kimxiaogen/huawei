@@ -1,6 +1,4 @@
-package schedule.model;
-
-import java.util.LinkedList;
+package com.huawei.java.main.model;
 
 /**
  * 单链表节点，用来绑定虚拟机

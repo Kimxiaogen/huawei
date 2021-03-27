@@ -1,10 +1,10 @@
-package schedule.tool;
+package com.huawei.java.main.tool;
 
-import schedule.manager.Manager;
-import schedule.manager.impl.ManagerImpl;
-import schedule.model.Request;
-import schedule.model.Server;
-import schedule.model.Virtual;
+import com.huawei.java.main.manager.Manager;
+import com.huawei.java.main.manager.impl.ManagerImpl;
+import com.huawei.java.main.model.Request;
+import com.huawei.java.main.model.Server;
+import com.huawei.java.main.model.Virtual;
 
 import java.io.*;
 import java.util.*;
@@ -94,11 +94,10 @@ public class DataTool {
      * @return 调度管理类
      */
     public static Manager constructDataModel() {
-        Scanner sc = new Scanner(System.in);
-        Manager model = null;
+        Manager model;
         Server[] availableServers;
         Map<String, Virtual> availableVirtuals = new HashMap<>();
-        Request[][] requests = null;
+        Request[][] requests;
         //String line;
         List<String> text = new ArrayList<>();
         //读取数据

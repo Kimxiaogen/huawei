@@ -1,4 +1,4 @@
-package schedule.model;
+package com.huawei.java.main.model;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -11,33 +11,13 @@ import java.util.Set;
  * @date 2021/3/11 10:13
  * <p>Description:实现服务器主要功能</p>
  */
-public class Server {
+public class Server implements Comparable<Server> {
 
     /**
      * 表示A节点
      */
     private static final String NODE_A = "A";
-    /**
-     * 表示B节点
-     */
-    private static final String NODE_B = "B";
 
-    /**
-     * CPU最大核数
-     */
-    private static final int MAX_CPU_CORES = 1024;
-    /**
-     * 最大硬件成本
-     */
-    private static final int MAX_COST_OF_DEVICES = 500000;
-    /**
-     * 最大每日能耗成本
-     */
-    private static final int MAX_COST_OF_ENERGY = 5000;
-    /**
-     * 最大服务器型号长度
-     */
-    private static final int MAX_LEN_OF_TYPE = 20;
 
     /**
      * 自动编号
@@ -78,6 +58,11 @@ public class Server {
      * 当前服务器上虚拟机集合
      */
     private Set<Virtual> virtualSet;
+
+    /**
+     * 利用率
+     */
+    private double usedRate;
 
     public int getNo() {
         return no;
@@ -135,6 +120,14 @@ public class Server {
         this.virtualSet = virtualSet;
     }
 
+    public double getUsedRate() {
+        return usedRate;
+    }
+
+    public void setUsedRate(double usedRate) {
+        this.usedRate = usedRate;
+    }
+
     /**
      * 服务器（概念）构造函数
      *
@@ -152,6 +145,9 @@ public class Server {
         this.cost_of_devices = cost_of_devices;
         this.cost_of_energy = cost_of_energy;
         this.virtualSet = new HashSet<>();
+        this.node_A.setServer(this);
+        this.node_B.setServer(this);
+        this.usedRate = 0;
     }
 
     public Server() {
@@ -174,6 +170,9 @@ public class Server {
             s.setCost_of_devices(cost_of_devices);
             s.setCost_of_energy(cost_of_energy);
             s.setVirtualSet(new HashSet<>(virtualSet));
+            s.getNode_A().setServer(s);
+            s.getNode_B().setServer(s);
+            s.setUsedRate(usedRate);
             return s;
         }
     }
@@ -210,7 +209,9 @@ public class Server {
         } else {
             if (NODE_A.equals(node)) this.node_A.allocate(virtual.getCores(), virtual.getMemorize(), virtual.getId());
             else this.node_B.allocate(virtual.getCores(), virtual.getMemorize(), virtual.getId());
+            virtual.setNode(node);
         }
+        updateUtilizationRate();
     }
 
     /**
@@ -220,6 +221,7 @@ public class Server {
      */
     public void remove(Virtual virtual) {
         virtual.setServer(null);
+        virtual.setNode(null);
         this.virtualSet.remove(virtual);
         if (virtual.isDoubleNodes()) {
             int cores = -virtual.getCores() / 2, mem = -virtual.getMemorize() / 2;
@@ -230,6 +232,26 @@ public class Server {
             if (this.node_A.contain(id)) this.node_A.allocate(-virtual.getCores(), -virtual.getMemorize(), id);
             else this.node_B.allocate(-virtual.getCores(), -virtual.getMemorize(), id);
         }
+        updateUtilizationRate();
+    }
+
+    /**
+     * 删除虚拟机(NoSet)
+     *
+     * @param virtual 虚拟机
+     */
+    public void removeNoSet(Virtual virtual) {
+        virtual.setServer(null);
+        if (virtual.isDoubleNodes()) {
+            int cores = -virtual.getCores() / 2, mem = -virtual.getMemorize() / 2;
+            this.node_A.allocate(cores, mem, null);
+            this.node_B.allocate(cores, mem, null);
+        } else {
+            Integer id = virtual.getId();
+            if (this.node_A.contain(id)) this.node_A.allocate(-virtual.getCores(), -virtual.getMemorize(), id);
+            else this.node_B.allocate(-virtual.getCores(), -virtual.getMemorize(), id);
+        }
+        updateUtilizationRate();
     }
 
     /**
@@ -241,10 +263,10 @@ public class Server {
         int used_cores = getCoresUsed(), used_mem = getMemorizeUsed();
         //int total_cores = used_cores + getCores(), total_mem = used_mem + getMemorize();
         //double cost = ((double)used_cores / total_cores + (double)used_mem / total_mem) / 2 * cost_of_devices;
-        //double cost = (double) (cost_of_devices + 800 * cost_of_energy) / (used_cores + used_mem);   //627401498
-        double cost = (double) (cost_of_devices) / (used_cores + used_mem);    //627113861
+        //double cost = (double) (cost_of_devices + 800 * cost_of_energy) / (used_cores + used_mem);   //605208782
+        double cost = (double) (cost_of_devices) / (used_cores + used_mem);    //605169014
         //double cost = 1/(((double)used_cores / total_cores + (double)used_mem / total_mem) / 2);    //1654709526
-        //double cost = (double)(cost_of_devices) / (total_cores + total_mem);  //NaN
+        //double cost = (double)(cost_of_devices) / (total_cores + total_mem);  //1398922945
         return cost;
     }
 
@@ -262,4 +284,29 @@ public class Server {
         }
         return false;
     }
+
+    /**
+     * 更新利用率
+     */
+    public void updateUtilizationRate() {
+        int used_cores = getCoresUsed(), used_mem = getMemorizeUsed();
+        int total_cores = used_cores + getCores(), total_mem = used_mem + getMemorize();
+        this.usedRate = ((double) used_cores / total_cores + (double) used_mem / total_mem) / 2;
+    }
+
+    @Override
+    public int compareTo(Server o) {
+        if (o.getCores() != getCores()) return getCores() - o.getCores();
+        return getMemorize() - o.getMemorize();
+    }
+
+//    @Override
+//    public String toString() {
+//        //return "A:" + node_A.toString() + " B:" + node_B.toString();
+//        String s = "";
+//        s += "\t\tA节点\t\tB节点\n";
+//        s += "占用\t" + node_A.getCores_used() + "/" + node_A.getMemorize_used() + "\t" + node_B.getCores_used() + "/" + node_B.getMemorize_used() + "\n";
+//        s += "总量\t" + (node_A.getCores() + node_A.getCores_used()) + "/" + (node_A.getMemorize() + node_A.getMemorize_used()) + "\t" + (node_B.getCores() + node_B.getCores_used()) + "/" + (node_B.getMemorize() + node_B.getMemorize_used()) + "\n";
+//        return s;
+//    }
 }
